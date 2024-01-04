@@ -28,7 +28,7 @@ class CheckStateModel private constructor() {
     var listOrganization: List<DataOrganization> = emptyList()
         private set
     var listPeople =
-        ComposeState<List<Pair<String, List<Triple<DataPeople, MutableState<Int>, MutableState<String>>>>>>(
+        ComposeState<List<Pair<String, List<Triple<DataPeople, MutableIntState, MutableState<String>>>>>>(
             emptyList()
         )
         private set
@@ -95,7 +95,7 @@ class CheckStateModel private constructor() {
         listPeople.value = organization.sortedBy { it.id }.mapNotNull {
             PeopleUtil.mapPeopleByOrg[it.id]?.map { people ->
                 val item = attendance?.items?.get(people.id)
-                val checkedState = mutableStateOf(item?.checked ?: 0)
+                val checkedState = mutableIntStateOf(item?.checked ?: 0)
                 val reasonState = mutableStateOf(
                     item?.reason.orEmpty().ifEmpty { reasonSavedMap[people.id].orEmpty() }
                 )
@@ -104,16 +104,18 @@ class CheckStateModel private constructor() {
         }
 
         mapFruitPeople.clear()
-        mapFruitPeople.putAll(attendance?.items?.values
-            ?.filter { item -> item.checked == 1 || item.checked == 2 }
-            ?.mapNotNull { item ->
-                PeopleUtil.mapPeople[item.id]?.let { item2 -> Pair(item2, item) }
-            }
-            ?.associateBy { it.first.id }
-            .orEmpty()
-        )
         mapFruit.clear()
-        mapFruit.putAll(attendance?.fruits.orEmpty())
+        if (attendanceType?.hasFruit == true) {
+            mapFruitPeople.putAll(attendance?.items?.values
+                ?.filter { item -> item.checked == 1 || item.checked == 2 }
+                ?.mapNotNull { item ->
+                    PeopleUtil.mapPeople[item.id]?.let { item2 -> Pair(item2, item) }
+                }
+                ?.associateBy { it.first.id }
+                .orEmpty()
+            )
+            mapFruit.putAll(attendance?.fruits.orEmpty())
+        }
 
         if (attendanceType?.hasFruit != true) ScreenManager.openCheckScreen() else ScreenManager.openCheckFruitScreen()
     }
@@ -245,8 +247,8 @@ class CheckStateModel private constructor() {
             listPeople.value.flatMap { item -> item.second }.associate {
                 it.first.id to DataAttendanceItem(
                     it.first.id,
-                    it.second.value,
-                    if (it.second.value == 1) "" else it.third.value
+                    it.second.intValue,
+                    if (it.second.intValue == 1) "" else it.third.value
                 )
             }.also { ReasonPref.setReasonList(it.values.map { item -> item.id to item.reason }) }
                     + mapFruitPeople.mapValues { item -> item.value.second },

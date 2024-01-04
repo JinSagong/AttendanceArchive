@@ -101,7 +101,7 @@ fun CheckScreen(checkStateModel: CheckStateModel) {
                             modifier = Modifier.fillMaxWidth().wrapContentHeight()
                                 .padding(vertical = 4f.dp, horizontal = 16f.dp),
                             onClick = {
-                                people.second.value = if (people.second.value == 0) 1 else 0
+                                people.second.intValue = if (people.second.intValue == 0) 1 else 0
                             }
                         ) {
                             Box(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
@@ -114,8 +114,8 @@ fun CheckScreen(checkStateModel: CheckStateModel) {
                                     Text(
                                         modifier = Modifier.wrapContentSize().defaultMinSize(minWidth = 56f.dp)
                                             .padding(16f.dp, 16f.dp, 0f.dp, 16f.dp),
-                                        text = if (people.second.value == 1) Strings.attendanceCheckType1 else Strings.attendanceCheckType0,
-                                        color = if (people.second.value == 1) LocalMyColorScheme.current.green else LocalMyColorScheme.current.red,
+                                        text = if (people.second.intValue == 1) Strings.attendanceCheckType1 else Strings.attendanceCheckType0,
+                                        color = if (people.second.intValue == 1) LocalMyColorScheme.current.green else LocalMyColorScheme.current.red,
                                         fontSize = 14f.sp
                                     )
                                     Text(
@@ -126,7 +126,7 @@ fun CheckScreen(checkStateModel: CheckStateModel) {
                                     )
                                 }
                                 this@Card.AnimatedVisibility(
-                                    visible = people.second.value != 1,
+                                    visible = people.second.intValue != 1,
                                     modifier = Modifier.fillMaxWidth(0.5f).fillMaxHeight()
                                         .padding(8f.dp)
                                         .align(Alignment.CenterEnd)
