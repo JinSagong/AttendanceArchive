@@ -15,6 +15,7 @@ import com.jin.attendance_archive.util.file.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import java.io.File
+import java.util.Calendar
 import kotlin.coroutines.resume
 
 class FilingStateModel private constructor() {
@@ -49,8 +50,9 @@ class FilingStateModel private constructor() {
         fileGeneratorJob.remember()
     }
 
-    fun initPosition() {
-        yearPosition.value = DateTimeUtil.getYearPosition()
+    fun initPosition(isCurrentPosition: Boolean = false) {
+        yearPosition.value =
+            if (isCurrentPosition) DateTimeUtil.getYearPosition(Calendar.getInstance()) else DateTimeUtil.getYearPosition()
         monthPosition.value = DateTimeUtil.getMonthPosition()
         weekPosition.value = DateTimeUtil.getWeekPosition()
         option.value = 0
@@ -137,16 +139,18 @@ class FilingStateModel private constructor() {
         val generate = {
             cancelGenerateFile()
             fileGeneratorJob.value = coroutineScope.launch(Dispatchers.Default) {
-                val startWeek = DateTimeUtil.getStartWeekValue(yearPosition.value)
-                val endWeek = DateTimeUtil.getEndWeekValue(yearPosition.value)
                 if (option.value == 0) {
+                    val startWeek =
+                        DateTimeUtil.getStartWeekValueForYearly(yearPosition.value, Calendar.SUNDAY)
+                    val endWeek =
+                        DateTimeUtil.getEndWeekValueForYearly(yearPosition.value, Calendar.SUNDAY)
                     val title = DateTimeUtil.getYearlyFileTitle(yearPosition.value, "주일 출석부")
                     val list = DateTimeUtil.splitWeekValueRange(startWeek, endWeek)
                         .map { getAttendance2(it.first, it.second) }
                         .flatten()
                     if (isActive) {
                         val fg = YearlyFileGenerator(title)
-                        fg.setData(true, list, startWeek, endWeek)
+                        fg.setData(true, list, startWeek, endWeek, Calendar.SUNDAY)
                         val fileCreated = if (isActive) fg.createFile() else null
                         if (isActive) file.value = fileCreated
                         if (isActive) Toasty.show(if (file.value != null) Strings.filingGenerateMsg else Strings.filingGenerateFailureMsg)
@@ -154,6 +158,16 @@ class FilingStateModel private constructor() {
                 } else {
                     AttendanceTypeUtil.listAttendanceType.value.filter { !it.hasFruit }
                         .getOrNull(option.value - 1)?.let { attendanceType ->
+                            val day = when (attendanceType.id) {
+                                "id000003" -> Calendar.WEDNESDAY
+                                "id000004" -> Calendar.THURSDAY
+                                "id000005" -> Calendar.FRIDAY
+                                else -> Calendar.SUNDAY
+                            }
+                            val startWeek =
+                                DateTimeUtil.getStartWeekValueForYearly(yearPosition.value, day)
+                            val endWeek =
+                                DateTimeUtil.getEndWeekValueForYearly(yearPosition.value, day)
                             val title = DateTimeUtil.getYearlyFileTitle(
                                 yearPosition.value,
                                 attendanceType.name + " 출석부"
@@ -163,7 +177,7 @@ class FilingStateModel private constructor() {
                                 .flatten()
                             if (isActive) {
                                 val fg = YearlyFileGenerator(title)
-                                fg.setData(false, list, startWeek, endWeek)
+                                fg.setData(false, list, startWeek, endWeek, day)
                                 val fileCreated = if (isActive) fg.createFile() else null
                                 if (isActive) file.value = fileCreated
                                 if (isActive) Toasty.show(if (file.value != null) Strings.filingGenerateMsg else Strings.filingGenerateFailureMsg)
@@ -212,6 +226,7 @@ class FilingStateModel private constructor() {
                                     if (isActive) file.value = fileCreated
                                 }
                             }
+
                             2 -> {
                                 val title = DateTimeUtil.getYearlyFileTitle(
                                     yearPosition.value, "전교인 주일 현장전도"
@@ -228,6 +243,7 @@ class FilingStateModel private constructor() {
                                     if (isActive) file.value = fileCreated
                                 }
                             }
+
                             else -> {
                                 val title = DateTimeUtil.getWeeklyFileTitle(
                                     yearPosition.value,

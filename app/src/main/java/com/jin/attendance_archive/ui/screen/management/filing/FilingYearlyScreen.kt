@@ -41,7 +41,7 @@ fun FilingYearlyScreen(filingStateModel: FilingStateModel) {
     val scrollState = rememberScrollState()
     if (ScreenManager.filingYearlyScreen.value == Pair(true, true)) {
         coroutineScope.launch { scrollState.scrollTo(0) }
-        filingStateModel.initPosition()
+        filingStateModel.initPosition(isCurrentPosition = true)
     }
     SideEffect {
         if (ScreenManager.filingYearlyScreen.value == Pair(false, false)) {

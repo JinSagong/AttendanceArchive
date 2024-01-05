@@ -20,8 +20,8 @@ class YearlyFileGenerator(title: String) : FileGenerator(title) {
     private var dateList = emptyArray<Pair<String, Int>>()
     private var lastColumnIdx = dateList.size + 3
 
-    fun setData(isSunResult: Boolean, list: List<DataAttendance>, startWeek: Int, endWeek: Int) {
-        dateList = DateTimeUtil.getDateArrayOfWeek(startWeek, endWeek)
+    fun setData(isSunResult: Boolean, list: List<DataAttendance>, startWeek: Int, endWeek: Int, day: Int) {
+        dateList = DateTimeUtil.getDateArrayOfWeek(startWeek, endWeek, day)
         lastColumnIdx = dateList.size + 3
         val listAdjusted = if (isSunResult) {
             val attendanceTypeList = arrayListOf("id000000", "id000001", "id000002")
