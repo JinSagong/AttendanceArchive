@@ -9,6 +9,7 @@ import com.jin.attendance_archive.model.util.OrganizationUtil
 import com.jin.attendance_archive.model.util.PeopleUtil
 import com.jin.attendance_archive.model.util.UserUtil
 import com.jin.attendance_archive.util.DateTimeUtil
+import com.jin.attendance_archive.util.Debug
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.IndexedColors
@@ -178,8 +179,11 @@ class FruitFileGenerator(title: String) : FileGenerator(title) {
             fruitAttendanceRows =
                 fruitAttendanceList.values.sumOf { item -> (item.size - 1).let { if (it < 0) 0 else it } / 10 + 1 } + 3
             val fruitList = list
-                .associate { item -> OrganizationUtil.mapOrganizationByOrgId[item.org]?.firstOrNull()?.category3.orEmpty() to item.fruits.values }
+                .associate { item -> item.org to item.fruits.values }
+                .toSortedMap()
+                .mapKeys { item -> OrganizationUtil.mapOrganizationByOrgId[item.key]?.firstOrNull()?.category3.orEmpty() }
                 .filter { item -> item.key.isNotEmpty() && item.value.isNotEmpty() }
+
             fruitList0 = fruitList
                 .mapValues { item -> item.value.filter { item2 -> item2.type == 0 } }
                 .filter { item -> item.value.isNotEmpty() }
@@ -252,7 +256,11 @@ class FruitFileGenerator(title: String) : FileGenerator(title) {
                 people
             )
         }
-        if (peopleOtherNotBc.isNotEmpty() && peopleOtherNotBc.size % 2 == 1) itemIdx++
+        if (peopleOtherNotBc.isNotEmpty() && peopleOtherNotBc.size % 2 == 1) {
+            val p = getPosition()
+            setCell(ws1.getRow(p.first), p.second * 3 + 2, null, styleBR)
+            itemIdx++
+        }
         peopleBc.forEach { item ->
             val p = getPosition()
             itemIdx++
@@ -291,7 +299,11 @@ class FruitFileGenerator(title: String) : FileGenerator(title) {
                 people
             )
         }
-        if (peopleOtherBc.isNotEmpty() && peopleOtherBc.size % 2 == 1) itemIdx++
+        if (peopleOtherBc.isNotEmpty() && peopleOtherBc.size % 2 == 1) {
+            val p = getPosition()
+            setCell(ws1.getRow(p.first), p.second * 3 + 2, null, styleBR)
+            itemIdx++
+        }
 
         if (!withPeriod) {
             rowIdx += (breakRows[breakRowIdx] + 1)
@@ -870,7 +882,7 @@ class FruitFileGenerator(title: String) : FileGenerator(title) {
         people: DataPeople
     ) {
         if (!withPeriod) {
-            val xssfRow = if (column == 0) ws1.createRow(row) else ws1.getRow(row)
+            val xssfRow = if (column == 0 && idx % 2 == 0) ws1.createRow(row) else ws1.getRow(row)
             val style = if (isTop && isBottom) arrayOf(
                 styleFruitChecked1TBL, styleFruitChecked1TB, styleFruitChecked1TBR
             )
