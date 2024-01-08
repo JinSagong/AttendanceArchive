@@ -167,6 +167,7 @@ class FruitFileGenerator(title: String) : FileGenerator(title) {
                 .associate { item ->
                     item.name to (fruitAttendanceNotBcList.values.flatten() + fruitAttendanceBcList)
                         .filter { item2 -> item2.first.duty == item.id }
+                        .distinctBy { item2 -> item2.first.id }
                 }
             fruitAttendanceCountList = OrganizationUtil.mapOrganization.values
                 .sortedBy { item -> item.id }
@@ -570,7 +571,7 @@ class FruitFileGenerator(title: String) : FileGenerator(title) {
             setCell(
                 this,
                 11,
-                fruitAttendanceCountList.values.sum().toString(),
+                fruitAttendanceList.values.sumOf { it.size }.toString(),
                 styleFruitCategoryTR
             )
         }

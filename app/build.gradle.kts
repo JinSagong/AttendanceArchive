@@ -11,8 +11,8 @@ android {
         applicationId = "com.jin.attendance_archive"
         minSdk = 23
         targetSdk = 34
-        versionCode = 30006
-        versionName = "3.0.6"
+        versionCode = 30007
+        versionName = "3.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
