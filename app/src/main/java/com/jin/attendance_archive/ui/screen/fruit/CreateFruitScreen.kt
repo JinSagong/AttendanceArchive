@@ -46,7 +46,8 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
 
     AnimatedVisibility(
         visible = ScreenManager.createFruitScreen.value.first,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .addFocusCleaner(LocalFocusManager.current),
         enter = slideInHorizontally(initialOffsetX = { if (ScreenManager.createFruitScreen.value.second) it else -it }),
         exit = slideOutHorizontally(targetOffsetX = { if (ScreenManager.createFruitScreen.value.second) -it else it })
@@ -56,14 +57,17 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
                     .padding(8f.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = null,
-                    modifier = Modifier.wrapContentSize()
+                    modifier = Modifier
+                        .wrapContentSize()
                         .clickable {
                             if (!SingleClickManager.isAvailable()) return@clickable
                             ScreenManager.onBackPressed()
@@ -71,7 +75,9 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                         .padding(8f.dp)
                 )
                 Text(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                         .padding(8f.dp),
                     text = checkStateModel.fruitTitle.value,
                     fontSize = 18f.sp,
@@ -80,12 +86,16 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
             }
 
             Column(
-                modifier = Modifier.widthIn(0f.dp, Dimens.maxWidth).wrapContentHeight()
+                modifier = Modifier
+                    .widthIn(0f.dp, Dimens.maxWidth)
+                    .wrapContentHeight()
                     .verticalScroll(scrollState)
                     .padding(vertical = 12f.dp),
             ) {
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                         .padding(horizontal = 16f.dp, vertical = 4f.dp),
                     value = checkStateModel.fruitBeliever.value,
                     textStyle = TextStyle(
@@ -102,9 +112,10 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                     ),
                     keyboardActions = KeyboardActions()
                 )
-
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                if (checkStateModel.fruitType.value == 0) OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                         .padding(horizontal = 16f.dp, vertical = 4f.dp),
                     value = checkStateModel.fruitPeople.value,
                     textStyle = TextStyle(
@@ -121,28 +132,31 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                     ),
                     keyboardActions = KeyboardActions()
                 )
-
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(horizontal = 16f.dp, vertical = 4f.dp),
+                    value = checkStateModel.fruitTeacher.value,
+                    textStyle = TextStyle(
+                        fontSize = 14f.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    label = { Text(Strings.hasFruitTeacher, maxLines = 1, fontSize = 14f.sp) },
+                    onValueChange = { value -> checkStateModel.fruitTeacher.value = value },
+                    singleLine = true,
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions()
+                )
                 if (checkStateModel.fruitType.value == 0) {
                     OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                            .padding(horizontal = 16f.dp, vertical = 4f.dp),
-                        value = checkStateModel.fruitTeacher.value,
-                        textStyle = TextStyle(
-                            fontSize = 14f.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        label = { Text(Strings.hasFruitTeacher, maxLines = 1, fontSize = 14f.sp) },
-                        onValueChange = { value -> checkStateModel.fruitTeacher.value = value },
-                        singleLine = true,
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions()
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
                             .padding(horizontal = 16f.dp, vertical = 4f.dp),
                         value = checkStateModel.fruitAge.value.let { if (it <= 0) "" else it.toString() },
                         textStyle = TextStyle(
@@ -163,7 +177,9 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                         keyboardActions = KeyboardActions()
                     )
                     OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
                             .padding(horizontal = 16f.dp, vertical = 4f.dp),
                         value = checkStateModel.fruitPhone.value,
                         textStyle = TextStyle(
@@ -182,7 +198,8 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                     )
 
                     CheckBoxRow(
-                        modifier = Modifier.wrapContentSize()
+                        modifier = Modifier
+                            .wrapContentSize()
                             .padding(horizontal = 16f.dp, vertical = 4f.dp),
                         checked = checkStateModel.fruitRemeet.value,
                         text = Strings.hasFruitRemeet,
@@ -192,7 +209,9 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                     )
                 } else if (checkStateModel.fruitType.value == 1) {
                     OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
                             .padding(horizontal = 16f.dp, vertical = 4f.dp),
                         value = checkStateModel.fruitFrequency.value.let { if (it <= 0) "" else it.toString() },
                         textStyle = TextStyle(fontSize = 14f.sp, fontWeight = FontWeight.Bold),
@@ -213,7 +232,9 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                         keyboardActions = KeyboardActions()
                     )
                     OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
                             .padding(horizontal = 16f.dp, vertical = 4f.dp),
                         value = checkStateModel.fruitPlace.value,
                         textStyle = TextStyle(
@@ -238,14 +259,18 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                 }
             }
 
-            Button(modifier = Modifier.fillMaxWidth().wrapContentHeight()
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
                 .padding(16f.dp, 0f.dp, 16f.dp, 16f.dp),
                 onClick = {
                     if (!SingleClickManager.isAvailable()) return@Button
                     checkStateModel.addFruit()
                 }) {
                 Text(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                         .padding(0f.dp, 4f.dp),
                     text = checkStateModel.fruitConfirm.value,
                     textAlign = TextAlign.Center,
@@ -253,7 +278,8 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                 )
             }
 
-            if (checkStateModel.fruitId.value.isNotEmpty()) Button(modifier = Modifier.fillMaxWidth()
+            if (checkStateModel.fruitId.value.isNotEmpty()) Button(modifier = Modifier
+                .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(16f.dp, 0f.dp, 16f.dp, 16f.dp),
                 onClick = {
@@ -261,7 +287,9 @@ fun CreateFruitScreen(checkStateModel: CheckStateModel) {
                     checkStateModel.removeFruit()
                 }) {
                 Text(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                         .padding(0f.dp, 4f.dp),
                     text = Strings.hasFruitDelete,
                     textAlign = TextAlign.Center,

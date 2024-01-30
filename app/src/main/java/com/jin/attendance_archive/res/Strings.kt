@@ -74,6 +74,7 @@ object Strings {
     const val hasFruitPlace = "만난 장소"
     const val hasFruitDedicationEmpty = "헌신 사유를 입력해주세요"
     const val hasFruitPreacherEmpty = "전도자를 입력해주세요"
+    const val hasFruitTeacherEmpty = "사역자를 입력해주세요"
     const val hasFruitBelieverEmpty = "영접자를 입력해주세요"
     const val hasFruitPeopleDuplicated = "해당 명단이 새로운 출석 상태로 변경되었습니다"
     const val hasFruitDuplicated = "전도자와 영접자가 같은 열매가 이미 작성되어 있습니다"

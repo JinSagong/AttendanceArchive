@@ -195,9 +195,12 @@ class CheckStateModel private constructor() {
     fun addFruit() {
         when {
             fruitBeliever.value.isEmpty() -> Toasty.show(Strings.hasFruitBelieverEmpty)
-            fruitPeople.value.isEmpty() -> Toasty.show(Strings.hasFruitPreacherEmpty)
+            fruitType.value == 0 && fruitPeople.value.isEmpty() -> Toasty.show(Strings.hasFruitPreacherEmpty)
+            fruitType.value == 1 && fruitTeacher.value.isEmpty() -> Toasty.show(Strings.hasFruitTeacherEmpty)
             else -> {
-                val id = "${fruitType.value}&${fruitPeople.value}&${fruitBeliever.value}"
+                val id =
+                    if (fruitType.value == 0) "${fruitType.value}&${fruitPeople.value}&${fruitBeliever.value}"
+                    else "${fruitType.value}&${fruitTeacher.value}&${fruitBeliever.value}"
                 if (id in mapFruit.keys) Toasty.show(Strings.hasFruitDuplicated)
                 else {
                     if (fruitId.value.isNotEmpty()) mapFruit.remove(fruitId.value)
